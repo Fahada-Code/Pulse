@@ -30,6 +30,15 @@ class PulseConnector {
 
         // Also check periodically for time updates or other non-DOM changes
         setInterval(() => this.checkForUpdates(), 1000);
+
+        // Keep Service Worker Alive
+        setInterval(() => {
+            try {
+                chrome.runtime.sendMessage({ type: 'KEEP_ALIVE' });
+            } catch (e) {
+                // Ignore errors if extension context invalidated
+            }
+        }, 20000);
     }
 
     checkForUpdates() {

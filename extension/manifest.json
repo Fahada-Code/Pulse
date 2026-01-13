@@ -5,7 +5,8 @@
     "description": "Connects YouTube Music to the Pulse Desktop Widget",
     "permissions": [
         "scripting",
-        "activeTab"
+        "activeTab",
+        "tabs"
     ],
     "host_permissions": [
         "https://music.youtube.com/*"

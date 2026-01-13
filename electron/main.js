@@ -17,6 +17,11 @@ app.setLoginItemSettings({
 function startServer() {
     wss = new WebSocket.Server({ port: PORT });
 
+    wss.on('error', (err) => {
+        console.error('WebSocket Server Error:', err);
+        // Don't crash the app, but maybe retry or log
+    });
+
     wss.on('connection', (ws) => {
         console.log('Client connected');
         // Notify renderer of connection
