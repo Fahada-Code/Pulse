@@ -18,6 +18,7 @@ function startServer() {
             try {
                 const parsed = JSON.parse(message);
                 if (parsed.type === 'TRACK_UPDATE') {
+                    console.log('Received track update:', parsed.data.title); // Debug log
                     // Forward to renderer
                     if (mainWindow) {
                         mainWindow.webContents.send('track-update', parsed.data);

@@ -43,19 +43,39 @@ class PulseConnector {
     }
 
     getPlayerState() {
-        const titleElement = document.querySelector('ytmusic-player-bar .title');
-        const artistElement = document.querySelector('ytmusic-player-bar .byline');
-        const imageElement = document.querySelector('ytmusic-player-bar .image');
+        // Helper to try multiple selectors
+        const getText = (selectors) => {
+            for (const sel of selectors) {
+                const el = document.querySelector(sel);
+                if (el && el.innerText.trim()) return el.innerText;
+            }
+            return null;
+        };
+
+        const getSrc = (selectors) => {
+            for (const sel of selectors) {
+                const el = document.querySelector(sel);
+                if (el && el.src) return el.src;
+            }
+            return null;
+        };
+
+        const title = getText(['ytmusic-player-bar .title', '.content-info-wrapper .title', 'yt-formatted-string.title']) || 'Unknown Title';
+
+        let artist = getText(['ytmusic-player-bar .byline', '.content-info-wrapper .subtitle', '.content-info-wrapper .byline']);
+        if (artist) {
+            // Remove "• Album" or "• Views" parts often found in byline
+            artist = artist.split('•')[0].trim();
+        } else {
+            artist = 'Unknown Artist';
+        }
+
+        const albumArt = getSrc(['ytmusic-player-bar .image', '.thumbnail-image-wrapper img', '#img']) || '';
+
         const videoElement = document.querySelector('video');
+        const isPlaying = videoElement ? !videoElement.paused : false;
 
-        let title = titleElement ? titleElement.innerText : 'Unknown Title';
-        let artist = artistElement ? artistElement.innerText.split('•')[0].trim() : 'Unknown Artist';
-        let albumArt = imageElement ? imageElement.src : '';
-        let isPlaying = videoElement ? !videoElement.paused : false;
-
-        // Clean up high-res art URL if needed (sometimes google returns s60-something)
-        // If it looks small, try to replace w-h pattern if exists, or just leave it.
-        // Usually YT Music uses typical google user content URLs.
+        console.log('Pulse Debug:', { title, artist, albumArt, isPlaying });
 
         return {
             title,
