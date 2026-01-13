@@ -27,9 +27,9 @@ if (!gotTheLock) {
         // Keep running if possible
     });
 
-    // Enable Auto-start (Login Item)
+    // Auto-start disabled per user request
     app.setLoginItemSettings({
-        openAtLogin: true,
+        openAtLogin: false,
         path: app.getPath('exe'),
     });
 }
@@ -90,6 +90,7 @@ function createWindow() {
         y: screenHeight - widgetHeight - 20,
         frame: false,
         transparent: true,
+        transparent: true,
         alwaysOnTop: true,
         resizable: false,
         skipTaskbar: false,
@@ -97,8 +98,13 @@ function createWindow() {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: false,
             contextIsolation: true
-        }
+        },
+        icon: path.join(__dirname, '../assets/icon.png') // Set app icon
     });
+
+    // CRITICAL: Set level to 'screen-saver' to stay above exclusive-mode games
+    mainWindow.setAlwaysOnTop(true, 'screen-saver');
+    mainWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
 
     mainWindow.loadFile(path.join(__dirname, 'index.html'));
 
