@@ -152,10 +152,12 @@ function drawVisualizer() {
     const borderColor = `rgba(0, 255, 255, ${average / 255 * 0.8})`; // Cyan variable opacity
 
     // Apply to current mode container
-    if (document.getElementById('mini-mode').style.display === 'flex') {
+    if (miniModeContainer.style.display !== 'none') {
         const miniBg = document.getElementById('mini-background');
-        miniBg.style.boxShadow = `0 0 ${intensity + 10}px ${borderColor}`;
-        miniBg.style.borderColor = `rgba(255, 255, 255, ${0.2 + (average / 255) * 0.5})`;
+        if (miniBg) {
+            miniBg.style.boxShadow = `0 0 ${intensity + 10}px ${borderColor}`;
+            miniBg.style.borderColor = `rgba(255, 255, 255, ${0.2 + (average / 255) * 0.5})`;
+        }
     } else {
         document.body.style.boxShadow = `0 0 ${intensity + 5}px ${borderColor}`;
     }
