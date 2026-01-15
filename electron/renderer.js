@@ -10,43 +10,48 @@ const extendedUI = document.getElementById('extended-ui');
 const miniModeContainer = document.getElementById('mini-mode-container');
 const expandBtn = document.getElementById('expand-btn');
 
-// Resume audio context
+// --- RESUME AUDIO CONTEXT ---
+// Browsers block audio unless triggered by a user action.
+// We capture any click to ensure the visualizer can start.
 document.addEventListener('click', () => {
     if (audioContext && audioContext.state === 'suspended') {
         audioContext.resume();
     }
 });
 
-// Audio controls
+// --- UI INTERACTIONS ---
+
 let isNavigating = false;
 function handleNav(action) {
     if (isNavigating) return;
     isNavigating = true;
     window.electronAPI.sendMediaCommand(action);
-    setTimeout(() => isNavigating = false, 500); // 500ms debounce
+    // Prevent spamming buttons
+    setTimeout(() => isNavigating = false, 500);
 }
 
 playPauseBtn.addEventListener('click', () => window.electronAPI.sendMediaCommand('play'));
 prevBtn.addEventListener('click', () => handleNav('prev'));
 nextBtn.addEventListener('click', () => handleNav('next'));
 
-// Collapse
+// Switch to Mini Mode (Floating Bubble)
 minBtn.addEventListener('click', () => {
     extendedUI.style.display = 'none';
     miniModeContainer.style.display = 'block';
 
     window.electronAPI.resizeWindow(60, 60);
+    // Make transparent for the circular look
     document.body.style.padding = '0';
     document.body.style.background = 'transparent';
     document.body.style.border = 'none';
 
-    // Force canvas resize after layout change
+    // Give the layout a moment to settle before resizing canvas
     setTimeout(resizeCanvas, 50);
 });
 
-// Expand
+// Switch to Extended Mode (Main UI)
 expandBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
+    e.stopPropagation(); // Don't trigger drag
     expandUI();
 });
 
@@ -59,11 +64,104 @@ function expandUI() {
     document.body.style.background = 'rgba(20, 20, 20, 0.95)';
     document.body.style.border = '1px solid rgba(255, 255, 255, 0.1)';
 
-    // Fix: Force resize so main canvas works again
     setTimeout(resizeCanvas, 50);
 }
 
-// ... (existing code) ...
+function setIdleState() {
+    titleEl.innerText = 'Not Playing';
+    artistEl.innerText = 'Waiting for music...';
+    playPauseBtn.innerText = '▶';
+    artEl.style.display = 'none';
+    placeholderEl.style.display = 'block';
+}
+
+function setLaunchingState() {
+    titleEl.innerText = 'Opening...';
+    artistEl.innerText = 'Launching YouTube Music';
+    playPauseBtn.innerText = '⏳';
+}
+
+const miniBackground = document.getElementById('mini-background');
+
+// Theme color
+let themeColor = '0, 255, 255'; // Default Cyan
+
+function getDominantColor(img) {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = 1;
+    canvas.height = 1;
+
+    // Get average color
+    ctx.drawImage(img, 0, 0, 1, 1);
+    const [r, g, b] = ctx.getImageData(0, 0, 1, 1).data;
+    return `${r}, ${g}, ${b}`;
+}
+
+// Visualizer
+const canvas = document.getElementById('visualizer');
+const canvasCtx = canvas.getContext('2d');
+const miniCanvas = document.getElementById('mini-visualizer');
+const miniCanvasCtx = miniCanvas.getContext('2d');
+
+let audioContext;
+let analyser;
+let dataArray;
+let source;
+let animationId;
+let isVisualizerRunning = false;
+
+// Setup visualizer
+async function setupVisualizer() {
+    try {
+        const streamId = await window.electronAPI.getDesktopStreamId();
+        const stream = await navigator.mediaDevices.getUserMedia({
+            audio: {
+                mandatory: {
+                    chromeMediaSource: 'desktop',
+                    chromeMediaSourceId: streamId
+                }
+            },
+            video: {
+                mandatory: {
+                    chromeMediaSource: 'desktop',
+                    chromeMediaSourceId: streamId
+                }
+            }
+        });
+
+        // Audio only
+        const audioStream = new MediaStream(stream.getAudioTracks());
+
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = audioContext.createAnalyser();
+        analyser.fftSize = 64; // Small fft size
+
+        source = audioContext.createMediaStreamSource(audioStream);
+        source.connect(analyser);
+
+        const bufferLength = analyser.frequencyBinCount;
+        dataArray = new Uint8Array(bufferLength);
+
+        // Resize
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+    } catch (e) {
+        console.error('Visualizer Setup Failed:', e);
+    }
+}
+
+function resizeCanvas() {
+    if (canvas) {
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+    }
+    if (miniCanvas) {
+        miniCanvas.width = miniCanvas.offsetWidth;
+        miniCanvas.height = miniCanvas.offsetHeight;
+    }
+}
 
 function drawVisualizer() {
     if (!isVisualizerRunning || !analyser) return;
