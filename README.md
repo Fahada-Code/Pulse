@@ -1,69 +1,104 @@
-# 🎵 Pulse — YouTube Music Desktop Widget
+# 🎵 Pulse — Lightweight YouTube Music Controller
 
-Pulse is a lightweight, always-on-top desktop widget that lets you control **YouTube Music** without switching tabs or disrupting your workflow. It provides live track information, playback controls, and visual feedback in a minimal, unobtrusive UI that stays accessible while you work, game, or multitask.
+[![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
+[![Electron](https://img.shields.io/badge/Electron-v39.2.7-47848F?logo=electron&logoColor=white)](https://www.electronjs.org/)
+[![Platform](https://img.shields.io/badge/Platform-Windows-0078D6?logo=windows&logoColor=white)](https://github.com/Fahadada-code/Pulse)
 
-Pulse bridges the gap between web-based music playback and a native desktop experience using Electron and a browser extension, creating a smooth, system-like mini music controller.
+**Pulse** is a sleek, persistent desktop overlay widget designed to give you instant control over your **YouTube Music** playback. It lives on your desktop, staying above other windows without stealing focus, allowing you to jam out while you work, game, or browse.
 
 ---
 
 ## ✨ Features
 
-- Always-on-top desktop widget  
-- Live track info (title, artist, album art, playback state)  
-- Play / pause / next / previous controls  
-- Volume control  
-- Automatically opens YouTube Music when controls are used  
-- Visual music feedback (sound waves + animated borders while music plays)  
-- Remains visible while gaming or multitasking  
-- Clean, minimal UI with minimize and close controls  
+- **🚀 Persistent Overlay**: Stays always-on-top, even over fullscreen games or applications.
+- **🎨 Dynamic Visualizer**: Real-time audio frequency bars and pulsing borders that react to your music.
+- **🖼️ Smart Mini-Mode**: Switch between a detailed view (album art, controls, title) and a compact, circular floating bubble.
+- **🌓 Theme Integration**: The widget's glow and visualizer colors dynamically adapt to the currently playing track's album art.
+- **🎹 System-Level Shortcuts**: Global hotkeys (Ctrl+Shift+Q by default) to quickly exit the app.
+- **🔇 Advanced Controls**: Seek forward/backward, adjust volume, and toggle mute directly from the widget.
+- **🔗 Hybrid Architecture**: Uses a Chrome Extension to bridge the gap between the web player and your desktop.
 
 ---
 
-## 🧠 How It Works
+## 🏗️ Architecture
 
-Pulse uses a **hybrid architecture**:
+Pulse uses a high-performance bridge architecture to ensure low-latency communication between your browser and the desktop widget.
 
-- **Electron** renders the native desktop widget  
-- A **Chrome Extension** reads playback state directly from YouTube Music  
-- **WebSocket communication** syncs playback data and controls in real time  
+```mermaid
+graph TD
+    subgraph "Browser (Chrome/Edge)"
+        A[YouTube Music Tab] <--> B[Pulse Chrome Extension]
+    end
+    
+    subgraph "Desktop (Node.js/Electron)"
+        B <== "WebSocket (Port 8999)" ==> C[Electron Main Process]
+        C <--> D[Electron Renderer Process]
+        D --> E[Canvas Visualizer & UI]
+    end
 
-This approach allows Pulse to feel like a native system widget while still interacting with a browser-based music service.
-
----
-
-## 🛠 Tech Stack
-
-### Desktop
-- **Electron**
-- **HTML / CSS / JavaScript**
-- **Canvas / Web Audio API** (visualizations)
-
-### Browser Integration
-- **Chrome Extension (Manifest V3)**
-- **YouTube Music DOM hooks**
-
-### Communication
-- **WebSockets** (real-time sync)
-
-### Tooling
-- **Node.js**
-- **Electron Builder**
-- **npm**
+    style B fill:#f96,stroke:#333,stroke-width:2px
+    style C fill:#47848F,stroke:#333,stroke-width:2px,color:#fff
+```
 
 ---
 
-## 🧩 Development Setup
+## 🛠️ Setup & Installation
 
-Pulse is developed and built locally using Electron.
+### 1. Prerequisites
+- **Node.js** (v18 or higher recommended)
+- **Google Chrome** or a Chromium-based browser (for the extension)
 
+### 2. Desktop App Setup
 ```bash
+# Clone the repository
+git clone https://github.com/Fahadada-code/Pulse.git
+cd Pulse
+
 # Install dependencies
 npm install
 
-# Run in development mode
-npm run dev
+# Start in development mode
+npm start
 
-# Build the standalone desktop application
+# Build standalone installer
 npm run dist
+```
 
-# After building, the app will be in the dist/win-unpacked folder
+### 3. Chrome Extension Setup
+1. Open Chrome and navigate to `chrome://extensions/`.
+2. Enable **Developer mode** (top right).
+3. Click **Load unpacked** and select the `extension` folder from this repository.
+4. Open [YouTube Music](https://music.youtube.com) and start playing a track!
+
+---
+
+## 🎮 Usage Guide
+
+| Action | Control |
+| :--- | :--- |
+| **Play/Pause** | Click the Play/Pause button |
+| **Next/Prev** | Standard media navigation buttons |
+| **Seek** | Use `-10s` / `+10s` buttons |
+| **Volume** | Drag the volume slider |
+| **Mini-Mode** | Click the minimize icon to shrink into a floating bubble |
+| **Expand** | Click the mini-bubble to return to the full widget |
+| **Exit** | Click the `✕` button or use `Ctrl + Shift + Q` |
+
+---
+
+## 🔧 Troubleshooting
+
+- **"Disconnected" message**: Ensure the YouTube Music tab is open and the Pulse extension is active. Refreshing the YouTube Music page often fixes connection issues.
+- **Visualizer not moving**: Click anywhere on the widget once to resume the Web Audio Context (browser security requirement).
+- **Extension Outdated**: If you see this warning, go to `chrome://extensions/` and click the **Reload** icon on the Pulse extension.
+
+---
+
+## 📄 License
+This project is licensed under the **ISC License**. See the `LICENSE` file for details (if provided, otherwise defaults to ISC in `package.json`).
+
+---
+
+<p align="center">
+  Generated with ❤️ by Pulse Team
+</p>
