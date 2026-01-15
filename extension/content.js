@@ -1,9 +1,11 @@
-console.log('Pulse: Content Script Loaded');
+console.log('Pulse: Content Script Loaded v1.1');
 
 class PulseConnector {
     constructor() {
         this.lastState = {};
         this.observer = null;
+        this.updateInterval = null;
+        this.keepAliveInterval = null;
         this.init();
     }
 
@@ -29,22 +31,39 @@ class PulseConnector {
         }
 
         // Periodic check
-        setInterval(() => this.checkForUpdates(), 1000);
+        this.updateInterval = setInterval(() => this.checkForUpdates(), 1000);
 
         // SW keep-alive
-        setInterval(() => {
+        this.keepAliveInterval = setInterval(() => {
             // Keep alive
-            void chrome.runtime.sendMessage({ type: 'KEEP_ALIVE' }).catch(() => { });
+            try {
+                void chrome.runtime.sendMessage({ type: 'KEEP_ALIVE' }).catch(() => { });
+            } catch (e) {
+                this.handleContextInvalidated(e);
+            }
         }, 10000);
     }
 
-    checkForUpdates() {
-        const state = this.getPlayerState();
+    handleContextInvalidated(e) {
+        if (e.message.includes('Extension context invalidated')) {
+            console.log('Pulse: Context invalidated. Stopping polling.');
+            if (this.updateInterval) clearInterval(this.updateInterval);
+            if (this.keepAliveInterval) clearInterval(this.keepAliveInterval);
+            if (this.observer) this.observer.disconnect();
+        }
+    }
 
-        // Avoid spam
-        if (JSON.stringify(state) !== JSON.stringify(this.lastState)) {
-            this.lastState = state;
-            this.sendUpdate(state);
+    checkForUpdates() {
+        try {
+            const state = this.getPlayerState();
+
+            // Avoid spam
+            if (JSON.stringify(state) !== JSON.stringify(this.lastState)) {
+                this.lastState = state;
+                this.sendUpdate(state);
+            }
+        } catch (e) {
+            this.handleContextInvalidated(e);
         }
     }
 

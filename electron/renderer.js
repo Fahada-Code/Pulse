@@ -392,13 +392,7 @@ function stopVisualizer() {
 }
 
 // Update UI
-window.electronAPI.onTrackUpdate((data) => {
-    titleEl.innerText = data.title || 'Not Playing';
-    artistEl.innerText = data.artist || 'Waiting for music...';
 
-    artEl.style.display = 'none';
-    placeholderEl.style.display = 'block';
-}
 
 const volumeSlider = document.getElementById('volume-slider');
 const muteBtn = document.getElementById('mute-btn');
@@ -454,7 +448,15 @@ window.electronAPI.onTrackUpdate((data) => {
     }
 
     // Volume Sync (only if not dragging)
-    if (!isDraggingVolume) {
+    // Check if extension is updated (sends volume data)
+    if (data.volume === undefined && data.isPlaying) {
+        // Extension is outdated
+        titleEl.innerText = "⚠️ Extension Outdated";
+        artistEl.innerText = "Please reload Pulse in chrome://extensions";
+        volumeSlider.style.opacity = '0.2';
+        volumeSlider.disabled = true;
+    } else if (!isDraggingVolume) {
+        volumeSlider.disabled = false;
         if (data.volume !== undefined) {
             volumeSlider.value = data.volume;
             updateMuteIcon(data.volume, data.isMuted);

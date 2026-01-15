@@ -59,7 +59,7 @@ function connect() {
 
     socket.onerror = (error) => {
         console.error('Pulse: WebSocket error', error);
-        socket.close(); // Retry
+        if (socket) socket.close(); // Retry
     };
 }
 
