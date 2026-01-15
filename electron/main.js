@@ -132,7 +132,16 @@ function createWindow() {
     });
 
     ipcMain.on('quit-app', () => {
-        app.quit();
+        // Send pause command to extension before quitting
+        if (wss) {
+            wss.clients.forEach((client) => {
+                if (client.readyState === WebSocket.OPEN) {
+                    client.send(JSON.stringify({ type: 'COMMAND', command: 'pause' }));
+                }
+            });
+        }
+        // Small delay to ensure message delivery before exit
+        setTimeout(() => app.quit(), 200);
     });
 
     // Handle desktop stream capture for the visualizer
