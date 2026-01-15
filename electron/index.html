@@ -178,7 +178,24 @@
             border-radius: 50%;
             border: 1px solid rgba(255, 255, 255, 0.2);
             -webkit-app-region: drag;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
         "></div>
+
+        <!-- Mini Visualizer Canvas -->
+        <canvas id="mini-visualizer" style="
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            z-index: 2; /* Validated: Above background image */
+            opacity: 0.8;
+            pointer-events: none;
+        "></canvas>
 
         <button id="expand-btn" style="
             position: absolute;
