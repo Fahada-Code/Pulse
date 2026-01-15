@@ -327,34 +327,33 @@ function drawVisualizer() {
         if (miniBg) {
             miniBg.style.boxShadow = 'none';
         }
+        // Draw Waves (Max Mode Only)
+        // Bar gradient
+        const gradient = canvasCtx.createLinearGradient(0, canvas.height, 0, 0);
+        gradient.addColorStop(0, `rgba(${themeColor}, 1.0)`);
+        gradient.addColorStop(0.5, `rgba(${themeColor}, 0.8)`);
+        gradient.addColorStop(1, `rgba(255, 255, 255, 0.9)`);
+
+        canvasCtx.fillStyle = gradient;
+
+        // Bar glow
+        canvasCtx.shadowBlur = 15;
+        canvasCtx.shadowColor = `rgba(${themeColor}, 0.8)`;
+
+        // Soft bars
+        const barWidth = (canvas.width / dataArray.length) * 2.5;
+        let barHeight;
+        let x = 0;
+
+        for (let i = 0; i < dataArray.length; i++) {
+            barHeight = (dataArray[i] / 255) * canvas.height * 0.8;
+            canvasCtx.beginPath();
+            canvasCtx.roundRect(x, canvas.height - barHeight, barWidth, barHeight, [10, 10, 0, 0]);
+            canvasCtx.fill();
+            x += barWidth + 2;
+        }
+        canvasCtx.shadowBlur = 0;
     }
-
-    // Bar gradient
-    const gradient = activeCtx.createLinearGradient(0, activeCanvas.height, 0, 0);
-    gradient.addColorStop(0, `rgba(${themeColor}, 1.0)`); // Base
-    gradient.addColorStop(0.5, `rgba(${themeColor}, 0.8)`);
-    gradient.addColorStop(1, `rgba(255, 255, 255, 0.9)`); // White tips
-
-    activeCtx.fillStyle = gradient;
-
-    // Bar glow
-    activeCtx.shadowBlur = 15;
-    activeCtx.shadowColor = `rgba(${themeColor}, 0.8)`;
-
-    for (let i = 0; i < dataArray.length; i++) {
-        // Boost height
-        barHeight = (dataArray[i] / 255) * activeCanvas.height * 0.8;
-
-        // Draw bar
-        activeCtx.beginPath();
-        activeCtx.roundRect(x, activeCanvas.height - barHeight, barWidth, barHeight, [10, 10, 0, 0]);
-        activeCtx.fill();
-
-        x += barWidth + 2;
-    }
-
-    // Reset shadow
-    activeCtx.shadowBlur = 0;
 }
 
 function startVisualizer() {
