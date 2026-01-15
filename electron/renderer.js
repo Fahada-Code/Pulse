@@ -318,6 +318,7 @@ seekFwdBtn.addEventListener('click', () => window.electronAPI.sendMediaCommand({
 
 // Sync UI with track updates
 let currentTrackTitle = '';
+let volumeLockUntil = 0;
 
 window.electronAPI.onTrackUpdate((data) => {
     const isNewTrack = data.title && data.title !== currentTrackTitle && data.title !== 'Not Playing' && data.title !== 'Disconnected';
@@ -345,12 +346,17 @@ window.electronAPI.onTrackUpdate((data) => {
         volumeSlider.disabled = true;
     } else if (!isDraggingVolume) {
         volumeSlider.disabled = false;
+
         if (data.volume !== undefined) {
+            const now = Date.now();
+
             if (isNewTrack) {
-                // If song changed, force our current widget volume level onto the new song
+                // LOCK: Ignore browser volume for 3 seconds after song change
+                volumeLockUntil = now + 3000;
+                // Force our current widget volume level onto the new song
                 window.electronAPI.sendMediaCommand({ action: 'setVolume', value: volumeSlider.value });
-            } else {
-                // During the same song, stay synced with the browser's volume
+            } else if (now > volumeLockUntil) {
+                // Only sync with browser if the lock has expired
                 volumeSlider.value = data.volume;
                 updateMuteIcon(data.volume, data.isMuted);
             }
