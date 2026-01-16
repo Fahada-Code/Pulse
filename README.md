@@ -8,10 +8,16 @@ Pulse provides a persistent overlay that remains visible over other applications
 
 ## Installation
 
-To set up the desktop application, run the following commands in your terminal:
+To set up the desktop application for development, run the following commands in your terminal:
 
 npm install
 npm start
+
+To build a standalone executable for the application, use:
+
+npm run dist
+
+The output will be located in the dist folder.
 
 To set up the browser extension, open Chrome and navigate to the extensions page. Enable developer mode and use the option to load an unpacked extension, selecting the folder named extension in this project.
 
