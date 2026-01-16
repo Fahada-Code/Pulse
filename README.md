@@ -32,4 +32,4 @@ Once both the application and extension are set up, open YouTube Music in your b
 
 ## Troubleshooting
 
-If the widget displays a disconnected message, verify that the YouTube Music tab is open and the extension is active. If the visualizer is not moving, click once anywhere on the widget to enable the audio context as required by browser security.
+If the widget displays a disconnected message, verify that the YouTube Music tab is open and the extension is active. If the visualizer is not moving, click once anywhere on the widget to enable the audio context as required by browser security. Any other minor bugs can usually be fixed by simply closing and reopening the application.
