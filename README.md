@@ -11,6 +11,7 @@ Pulse provides a persistent overlay that remains visible over other applications
 To set up the desktop application for development, run the following commands in your terminal:
 
 npm install
+
 npm start
 
 To build a standalone executable for the application, use:
