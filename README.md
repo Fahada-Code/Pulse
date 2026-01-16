@@ -27,13 +27,16 @@ Pulse uses a simple architecture to bridge your browser and desktop:
 ### Desktop Application
 To set up the desktop application for development, run the following commands in your terminal:
 
+```bash
 npm install
-
 npm start
+```
 
 To build a standalone executable for the application, use:
 
+```bash
 npm run dist
+```
 
 The output will be located in the dist folder once the build is finished.
 
