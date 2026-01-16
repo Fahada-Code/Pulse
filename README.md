@@ -1,5 +1,9 @@
 # Pulse - YouTube Music Controller
 
+![Pulse Preview 1](assets/preview1.png)
+![Pulse Preview 2](assets/preview2.png)
+![Pulse Preview 3](assets/preview3.png)
+
 Pulse is a desktop widget that allows you to control YouTube Music from your desktop. It stays on top of other windows so you can easily manage your music while working or gaming.
 
 ## Features
