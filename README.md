@@ -49,4 +49,4 @@ Launch Pulse and make sure a YouTube Music tab is open in your browser with the 
 
 ## Troubleshooting
 
-If the widget shows a disconnected message, check that your YouTube Music tab is open and the extension is loaded. Most minor bugs can be fixed by simply closing and reopening the application.
+If the widget shows a disconnected message, check that your YouTube Music tab is open and the extension is loaded. Most minor bugs can be fixed by simply closing and reopening the application. Have fun!
