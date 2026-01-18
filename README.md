@@ -4,7 +4,7 @@
 ![Pulse Preview 2](assets/preview2.png)
 ![Pulse Preview 3](assets/preview3.png)
 
-Pulse is a desktop widget that allows you to control and visualize YouTube Music from your desktop. It works as a persistent overlay that stays on top of other windows so you can easily manage your music while working or gaming.
+Pulse is a desktop widget that allows you to control and visualize YouTube Music from your desktop. It works as a persistent overlay that stays on top of other windows so you can easily manage your music while working.
 
 ## How It Works
 
@@ -50,3 +50,8 @@ Launch Pulse and make sure a YouTube Music tab is open in your browser with the 
 ## Troubleshooting
 
 If the widget shows a disconnected message, check that your YouTube Music tab is open and the extension is loaded. Most minor bugs can be fixed by simply closing and reopening the application. Have fun!
+
+
+## Future plans
+
+* Add support while gaming
