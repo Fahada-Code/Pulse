@@ -10,6 +10,5 @@ contextBridge.exposeInMainWorld('electronAPI', {
     moveWindow: (x, y) => ipcRenderer.send('move-window', { x, y }),
     quitApp: () => ipcRenderer.send('quit-app'),
 
-    // Audio capture
     getDesktopStreamId: () => ipcRenderer.invoke('get-desktop-stream-id'),
 });
