@@ -1,4 +1,4 @@
-// Pulse Content Script v1.2
+
 // This script runs inside YouTube Music to scrape data and control the player.
 console.log('Pulse: Content Script Loaded');
 
