@@ -151,7 +151,7 @@ function createWindow() {
     });
 }
 
-// App lifecycle
+//Life cycle
 
 app.whenReady().then(() => {
     startServer();
