@@ -144,7 +144,7 @@ function createWindow() {
         setTimeout(() => app.quit(), 200);
     });
 
-    // Handle desktop stream capture for the visualizer
+    // Handle desktop stream capture
     ipcMain.handle('get-desktop-stream-id', async () => {
         const sources = await desktopCapturer.getSources({ types: ['screen'] });
         return sources[0]?.id;
